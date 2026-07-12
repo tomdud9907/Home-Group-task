@@ -4,16 +4,14 @@ import { useState } from "react";
 import {
   Alert,
   Box,
-  Button,
   CircularProgress,
   Container,
-  List,
-  ListItem,
-  Paper,
   Stack,
-  TextField,
   Typography
 } from "@mui/material";
+import CitySearch from "@/components/CitySearch";
+import SearchResults from "@/components/SearchResults";
+import WeatherCard from "@/components/WeatherCard";
 
 export default function Home() {
   const [query, setQuery] = useState("");
@@ -82,58 +80,18 @@ export default function Home() {
           </Typography>
         </Box>
 
-        <Paper component="form" onSubmit={handleSearch} sx={{ p: 2 }}>
-          <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-            <TextField
-              fullWidth
-              label="City"
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder="London"
-            />
-            <Button type="submit" variant="contained" disabled={!query.trim() || loading}>
-              Search
-            </Button>
-          </Stack>
-        </Paper>
+        <CitySearch
+          loading={loading}
+          onQueryChange={setQuery}
+          onSubmit={handleSearch}
+          query={query}
+        />
 
         {loading && <CircularProgress aria-label="Loading" />}
         {error && <Alert severity="error">{error}</Alert>}
 
-        {cities.length > 0 && (
-          <Paper sx={{ p: 2 }}>
-            <Typography variant="h6" component="h2">
-              Search results
-            </Typography>
-            <List>
-              {cities.map((city) => (
-                <ListItem
-                  key={`${city.name}-${city.state}-${city.country}-${city.lat}-${city.lon}`}
-                  disableGutters
-                  secondaryAction={
-                    <Button size="small" onClick={() => handleLoadWeather(city)}>
-                      Load weather
-                    </Button>
-                  }
-                >
-                  {city.name}
-                  {city.state ? `, ${city.state}` : ""}, {city.country}
-                </ListItem>
-              ))}
-            </List>
-          </Paper>
-        )}
-
-        {weather && (
-          <Paper sx={{ p: 2 }}>
-            <Typography variant="h6" component="h2">
-              Weather response
-            </Typography>
-            <Box component="pre" sx={{ overflowX: "auto", m: 0 }}>
-              {JSON.stringify(weather, null, 2)}
-            </Box>
-          </Paper>
-        )}
+        <SearchResults cities={cities} onLoadWeather={handleLoadWeather} />
+        <WeatherCard weather={weather} />
       </Stack>
     </Container>
   );
