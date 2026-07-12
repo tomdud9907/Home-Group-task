@@ -100,16 +100,16 @@ export default function WeatherCard({ onRemove, weather }) {
 
           <Stack
             alignItems="center"
-            direction={{ xs: "column", sm: "row" }}
+            direction="row"
             justifyContent="space-between"
-            spacing={2}
+            spacing={1.5}
           >
             <Box sx={{ minWidth: 0 }}>
               <Typography
                 component="p"
                 sx={{
                   color: "#0f172a",
-                  fontSize: { xs: 44, sm: 52 },
+                  fontSize: { xs: 40, sm: 52 },
                   fontWeight: 800,
                   lineHeight: 0.95
                 }}
@@ -133,16 +133,17 @@ export default function WeatherCard({ onRemove, weather }) {
                   border: "1px solid rgba(15, 23, 42, 0.08)",
                   borderRadius: 2,
                   display: "flex",
-                  height: 88,
+                  flex: "0 0 auto",
+                  height: { xs: 72, sm: 88 },
                   justifyContent: "center",
-                  width: 88
+                  width: { xs: 72, sm: 88 }
                 }}
               >
                 <Box
                   component="img"
                   alt={weather.description}
                   src={iconUrl}
-                  sx={{ height: 80, width: 80 }}
+                  sx={{ height: { xs: 66, sm: 80 }, width: { xs: 66, sm: 80 } }}
                 />
               </Box>
             )}
@@ -151,9 +152,9 @@ export default function WeatherCard({ onRemove, weather }) {
           <Box
             sx={{
               display: "grid",
-              gap: 1.5,
+              gap: { xs: 1, sm: 1.5 },
               gridTemplateColumns: {
-                xs: "1fr",
+                xs: "repeat(3, minmax(0, 1fr))",
                 sm: "repeat(3, minmax(0, 1fr))"
               }
             }}

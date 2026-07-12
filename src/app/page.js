@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import {
   Alert,
   Box,
+  Button,
   CircularProgress,
   Container,
   Paper,
@@ -147,6 +148,23 @@ export default function Home() {
     );
   }
 
+  async function handleRefreshWeather() {
+    setError("");
+    setLoading(true);
+
+    try {
+      const refreshedItems = await Promise.all(
+        dashboardItems.map((item) => fetchWeatherForCity(item.city))
+      );
+
+      setDashboardItems(refreshedItems);
+    } catch (refreshError) {
+      setError(refreshError.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <Container maxWidth="md" sx={{ py: { xs: 3, sm: 5 } }}>
       <Stack spacing={3.5}>
@@ -176,6 +194,32 @@ export default function Home() {
 
         <SearchResults cities={cities} onAddCity={handleAddCity} />
 
+        {dashboardItems.length > 0 && (
+          <Paper
+            sx={{
+              alignItems: "center",
+              bgcolor: "rgba(255, 255, 255, 0.72)",
+              border: "1px solid rgba(15, 23, 42, 0.08)",
+              display: "flex",
+              justifyContent: "space-between",
+              p: 1.5
+            }}
+          >
+            <Typography color="text.secondary" variant="body2">
+              Showing {dashboardItems.length} saved{" "}
+              {dashboardItems.length === 1 ? "city" : "cities"}
+            </Typography>
+            <Button
+              disabled={loading}
+              onClick={handleRefreshWeather}
+              size="small"
+              variant="contained"
+            >
+              Refresh weather
+            </Button>
+          </Paper>
+        )}
+
         <Box>
           <Typography variant="h5" component="h2" gutterBottom>
             Your Cities
@@ -193,7 +237,16 @@ export default function Home() {
               </Typography>
             </Paper>
           ) : (
-            <Stack spacing={2}>
+            <Box
+              sx={{
+                display: "grid",
+                gap: 2,
+                gridTemplateColumns: {
+                  xs: "1fr",
+                  md: "repeat(2, minmax(0, 1fr))"
+                }
+              }}
+            >
               {dashboardItems.map((item) => (
                 <WeatherCard
                   key={item.id}
@@ -201,7 +254,7 @@ export default function Home() {
                   weather={item.weather}
                 />
               ))}
-            </Stack>
+            </Box>
           )}
         </Box>
       </Stack>
