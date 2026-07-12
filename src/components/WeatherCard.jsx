@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Card,
   CardContent,
   Chip,
@@ -31,7 +32,7 @@ function WeatherMetric({ label, value }) {
         border: "1px solid rgba(15, 23, 42, 0.08)",
         borderRadius: 2,
         minWidth: 0,
-        p: 1.5
+        p: 1.25
       }}
     >
       <Typography color="text.secondary" variant="caption">
@@ -44,7 +45,7 @@ function WeatherMetric({ label, value }) {
   );
 }
 
-export default function WeatherCard({ weather }) {
+export default function WeatherCard({ onRemove, weather }) {
   if (!weather) {
     return null;
   }
@@ -66,8 +67,8 @@ export default function WeatherCard({ weather }) {
         overflow: "hidden"
       }}
     >
-      <CardContent sx={{ p: { xs: 2.5, sm: 3 } }}>
-        <Stack spacing={2.5}>
+      <CardContent sx={{ p: { xs: 2, sm: 2.25 } }}>
+        <Stack spacing={1.75}>
           <Stack
             alignItems={{ xs: "flex-start", sm: "center" }}
             direction={{ xs: "column", sm: "row" }}
@@ -101,14 +102,14 @@ export default function WeatherCard({ weather }) {
             alignItems="center"
             direction={{ xs: "column", sm: "row" }}
             justifyContent="space-between"
-            spacing={3}
+            spacing={2}
           >
             <Box sx={{ minWidth: 0 }}>
               <Typography
                 component="p"
                 sx={{
                   color: "#0f172a",
-                  fontSize: { xs: 58, sm: 72 },
+                  fontSize: { xs: 44, sm: 52 },
                   fontWeight: 800,
                   lineHeight: 0.95
                 }}
@@ -132,16 +133,16 @@ export default function WeatherCard({ weather }) {
                   border: "1px solid rgba(15, 23, 42, 0.08)",
                   borderRadius: 2,
                   display: "flex",
-                  height: 128,
+                  height: 88,
                   justifyContent: "center",
-                  width: 128
+                  width: 88
                 }}
               >
                 <Box
                   component="img"
                   alt={weather.description}
                   src={iconUrl}
-                  sx={{ height: 112, width: 112 }}
+                  sx={{ height: 80, width: 80 }}
                 />
               </Box>
             )}
@@ -167,6 +168,12 @@ export default function WeatherCard({ weather }) {
             />
             <WeatherMetric label="Humidity" value={`${weather.humidity}%`} />
             <WeatherMetric label="Wind" value={`${weather.windSpeed} m/s`} />
+          </Box>
+
+          <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+            <Button color="error" onClick={onRemove} size="small">
+              Remove
+            </Button>
           </Box>
         </Stack>
       </CardContent>

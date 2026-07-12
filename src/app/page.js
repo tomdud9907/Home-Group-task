@@ -141,6 +141,12 @@ export default function Home() {
     }
   }
 
+  function handleRemoveCity(cityId) {
+    setDashboardItems((currentItems) =>
+      currentItems.filter((item) => item.id !== cityId)
+    );
+  }
+
   return (
     <Container maxWidth="md" sx={{ py: { xs: 3, sm: 5 } }}>
       <Stack spacing={3.5}>
@@ -189,7 +195,11 @@ export default function Home() {
           ) : (
             <Stack spacing={2}>
               {dashboardItems.map((item) => (
-                <WeatherCard key={item.id} weather={item.weather} />
+                <WeatherCard
+                  key={item.id}
+                  onRemove={() => handleRemoveCity(item.id)}
+                  weather={item.weather}
+                />
               ))}
             </Stack>
           )}
