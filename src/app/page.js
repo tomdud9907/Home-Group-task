@@ -34,6 +34,10 @@ export default function Home() {
         throw new Error(data.error || "City search failed");
       }
 
+      if (data.cities.length === 0) {
+        setError(`No cities found for "${query.trim()}".`);
+      }
+
       setCities(data.cities);
     } catch (searchError) {
       setCities([]);
