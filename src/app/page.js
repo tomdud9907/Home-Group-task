@@ -6,6 +6,7 @@ import {
   Box,
   CircularProgress,
   Container,
+  Paper,
   Stack,
   Typography
 } from "@mui/material";
@@ -16,14 +17,17 @@ import WeatherCard from "@/components/WeatherCard";
 export default function Home() {
   const [query, setQuery] = useState("");
   const [cities, setCities] = useState([]);
-  const [weather, setWeather] = useState(null);
+  const [dashboardWeather, setDashboardWeather] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  function getCityId(city) {
+    return `${city.name}-${city.state}-${city.country}-${city.lat}-${city.lon}`;
+  }
 
   async function handleSearch(event) {
     event.preventDefault();
     setError("");
-    setWeather(null);
     setLoading(true);
 
     try {
@@ -47,9 +51,14 @@ export default function Home() {
     }
   }
 
-  async function handleLoadWeather(city) {
+  async function handleAddCity(city) {
     setError("");
-    setWeather(null);
+
+    if (dashboardWeather.some((item) => item.id === getCityId(city))) {
+      setError(`${city.name} is already on your dashboard.`);
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -64,7 +73,15 @@ export default function Home() {
         throw new Error(data.error || "Weather request failed");
       }
 
-      setWeather(data.weather);
+      setDashboardWeather((currentWeather) => [
+        ...currentWeather,
+        {
+          id: getCityId(city),
+          weather: data.weather
+        }
+      ]);
+      setCities([]);
+      setQuery("");
     } catch (weatherError) {
       setError(weatherError.message);
     } finally {
@@ -80,7 +97,7 @@ export default function Home() {
             Weather Dashboard
           </Typography>
           <Typography color="text.secondary">
-            Minimal API test screen. Search for a city, then load current weather.
+            Search for a city and add it to your dashboard.
           </Typography>
         </Box>
 
@@ -94,8 +111,26 @@ export default function Home() {
         {loading && <CircularProgress aria-label="Loading" />}
         {error && <Alert severity="error">{error}</Alert>}
 
-        <SearchResults cities={cities} onLoadWeather={handleLoadWeather} />
-        <WeatherCard weather={weather} />
+        <SearchResults cities={cities} onAddCity={handleAddCity} />
+
+        <Box>
+          <Typography variant="h5" component="h2" gutterBottom>
+            Dashboard
+          </Typography>
+          {dashboardWeather.length === 0 ? (
+            <Paper sx={{ p: 2 }}>
+              <Typography color="text.secondary">
+                No cities added yet. Search for a city above to get started.
+              </Typography>
+            </Paper>
+          ) : (
+            <Stack spacing={2}>
+              {dashboardWeather.map((item) => (
+                <WeatherCard key={item.id} weather={item.weather} />
+              ))}
+            </Stack>
+          )}
+        </Box>
       </Stack>
     </Container>
   );

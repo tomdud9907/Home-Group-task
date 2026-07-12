@@ -4,7 +4,7 @@ function formatCityName(city) {
   return `${city.name}${city.state ? `, ${city.state}` : ""}, ${city.country}`;
 }
 
-export default function SearchResults({ cities, onLoadWeather }) {
+export default function SearchResults({ cities, onAddCity }) {
   if (cities.length === 0) {
     return null;
   }
@@ -20,8 +20,8 @@ export default function SearchResults({ cities, onLoadWeather }) {
             key={`${city.name}-${city.state}-${city.country}-${city.lat}-${city.lon}`}
             disableGutters
             secondaryAction={
-              <Button size="small" onClick={() => onLoadWeather(city)}>
-                Load weather
+              <Button size="small" onClick={() => onAddCity(city)}>
+                Add
               </Button>
             }
           >
